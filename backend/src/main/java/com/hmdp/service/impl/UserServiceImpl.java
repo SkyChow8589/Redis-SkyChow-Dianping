@@ -1,10 +1,17 @@
 package com.hmdp.service.impl;
 
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.dto.Result;
 import com.hmdp.entity.User;
 import com.hmdp.mapper.UserMapper;
 import com.hmdp.service.IUserService;
-import org.springframework.stereotype.Service;
+import com.hmdp.utils.RegexUtils;
+
+import cn.hutool.core.util.RandomUtil;
 
 /**
  * <p>
@@ -16,5 +23,22 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+
+    @Override
+    public Result sendCode(String phone, HttpSession session) {
+        // 1.校验手机号
+        if (RegexUtils.isPhoneInvalid(phone)) {
+            // 2.如果不符合，返回错误信息
+            return Result.fail("手机号格式错误!");
+        }
+        // 3.符合，生成验证码
+        String code = RandomUtil.randomNumbers(6);
+        // 4.保存验证码到session
+        session.setAttribute("code", code);
+        // 5.发送验证码
+        log.debug(String.format("发送邮件验证码成功，验证码: %s", code));
+        // 返回OK
+        return  Result.ok();
+    }
 
 }
