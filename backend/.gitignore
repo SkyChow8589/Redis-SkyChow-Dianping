@@ -34,3 +34,5 @@ build/
 
 frontend/logs/*.log
 frontend/html/hmdp/
+
+frontend/contrib/vim/
